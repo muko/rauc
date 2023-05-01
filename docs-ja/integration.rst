@@ -956,12 +956,16 @@ RAUC の U-Boot ブートローダー インターフェイスは、次の U-Boo
     of your platform.
 .. note:: プラットフォームの要件に合わせて、スクリプトの起動コマンドを調整する必要があります。
 
-You should integrate your boot selection script as ``boot.scr`` default boot
-script into U-Boot.
+..
+  You should integrate your boot selection script as ``boot.scr`` default boot
+  script into U-Boot.
+ブート選択スクリプトを boot.scr デフォルト ブート スクリプトとして U-Boot に統合する必要があります。
 
-For this you have to convert it to a U-boot readable default script
-(``boot.scr``) first::
-
+..
+  For this you have to convert it to a U-boot readable default script
+  (``boot.scr``) first::
+このためには、最初に U-Boot で読み取り可能なデフォルト スクリプト (``boot.scr``) に変換する必要があります。
+    
   mkimage -A arm -T script -C none -n "Boot script" -d <path-to-input-script> boot.scr
 
 If you place this on a partition next to U-Boot, it will use it as its boot
@@ -1033,20 +1037,30 @@ See the corresponding
 section from the U-Boot documentation for more details on how to set up the
 environment config file for your device.
 
-Example: Setting up U-Boot Environment on eMMC/SD Card
+..
+  Example: Setting up U-Boot Environment on eMMC/SD Card
+例: eMMC/SD カードでの U-Boot 環境のセットアップ
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-For this example we assume a simple redundancy boot partition layout with a
-bootloader partition and two rootfs partitions.
+..
+  For this example we assume a simple redundancy boot partition layout with a
+  bootloader partition and two rootfs partitions.
+この例では、1 つのブートローダー パーティションと 2 つの rootfs パーティションを持つ単純な冗長ブート パーティション レイアウトを想定しています。
 
-Another additional partition we use exclusively for storing the environment.
+..
+  Another additional partition we use exclusively for storing the environment.
+環境を保存するためだけにもう 1 つの追加パーティションを使用します。
 
-.. note:: It is not strictly required to have the env on an actual MBR/GPT
-   partition, but we use this here as it better protects against accidentally
-   overwriting relevant data of other partitions.
+..
+  .. note:: It is not strictly required to have the env on an actual MBR/GPT
+     partition, but we use this here as it better protects against accidentally
+     overwriting relevant data of other partitions.
+.. note: env を実際の MBR/GPT パーティションに配置することは厳密には必須ではありませんが、他のパーティションの関連データを誤って上書きすることを防ぐため、ここではこれを使用します。
 
-Partition table (excerpt with partition offsets):
-
+..
+  Partition table (excerpt with partition offsets):
+パーティション テーブル (パーティション オフセットを含む抜粋):
+  
 .. code-block:: text
 
    /dev/mmcblk0p1 StartLBA:   8192 -> u-boot etc.
@@ -1054,17 +1068,22 @@ Partition table (excerpt with partition offsets):
    /dev/mmcblk0p3 StartLBA: 139264 -> rootfs A
    /dev/mmcblk0p4 StartLBA: 475136 -> rootfs B
 
-We enable redundant environment and storage in MMC (not in vfat/ext4 partition)
-in the u-boot config:
+..
+  We enable redundant environment and storage in MMC (not in vfat/ext4 partition)
+  in the u-boot config:
+u-boot 構成で、冗長環境と MMC (vfat/ext4 パーティションではなく) のストレージを有効にします。
 
 .. code-block:: cfg
 
    CONFIG_SYS_REDUNDAND_ENVIRONMENT=y
    CONFIG_ENV_IS_IN_MMC=y
 
-The default should be to use mmc device 0 and HW partition 0.
-Since U-Boot 2020.10.0 we can set this also explicitly if required:
-
+..
+  The default should be to use mmc device 0 and HW partition 0.
+  Since U-Boot 2020.10.0 we can set this also explicitly if required:
+デフォルトでは、mmc デバイス 0 と HW パーティション 0 を使用する必要があります。
+U-Boot 2020.10.0 以降、必要に応じて明示的に設定することもできます。
+  
 .. code-block:: cfg
 
    CONFIG_SYS_MMC_ENV_DEV=0
@@ -1288,35 +1307,54 @@ The ``<state>`` argument corresponds to one of the following values:
 The return value must be ``0`` if the boot state was set successfully,
 or non-zero if an error occurred.
 
-Init System and Service Startup
+..
+  Init System and Service Startup
+システムとサービスの初期化
 -------------------------------
 
-There are several ways to run the RAUC service on your target.
-The recommended way is to use a systemd-based system and allow to start RAUC
-via D-Bus activation.
+..
+  There are several ways to run the RAUC service on your target.
+  The recommended way is to use a systemd-based system and allow to start RAUC
+  via D-Bus activation.
+ターゲットで RAUC サービスを実行するには、いくつかの方法があります。
+推奨される方法は、systemd ベースのシステムを使用し、D-Bus アクティベーションを介して RAUC を開始できるようにすることです。
 
-You can start the RAUC service manually by executing::
+..
+  You can start the RAUC service manually by executing::
+次のコマンドを実行して、RAUC サービスを手動で開始できます。
 
   $ rauc service
 
-Keep in mind that rauc service reads the system.conf during startup and needs to be
-restarted for changes in the system.conf to take affect.
+..
+  Keep in mind that rauc service reads the system.conf during startup and needs to be
+  restarted for changes in the system.conf to take affect.
+rauc サービスは起動時に system.conf を読み取るため、system.conf の変更を有効にするには再起動する必要があることに注意してください。
 
-Systemd Integration
+..
+  Systemd Integration
+Systemd 統合
 ~~~~~~~~~~~~~~~~~~~
 
-When building RAUC, a default systemd ``rauc.service`` file will be generated
-in the ``data/`` folder.
+..
+  When building RAUC, a default systemd ``rauc.service`` file will be generated
+  in the ``data/`` folder.
+RAUC をビルドすると、デフォルトの systemd の ``rauc.service`` ファイルが ``data/`` フォルダーに生成されます。
 
-Depending on your configuration ``make install`` will place this file in one of
-your system's service file folders.
+..
+  Depending on your configuration ``make install`` will place this file in one of
+  your system's service file folders.
+構成に応じて、 ``make install`` はこのファイルをシステムのサービス ファイル フォルダーの 1 つに配置します。
 
-It is a good idea to wait for the system to be fully started before marking it
-as successfully booted.
-In order to achieve this, a smart solution is to create a systemd service that calls
-``rauc status mark-good`` and use systemd's dependency handling to assure this
-service will not be executed before all relevant other services came up
-successfully. It could look similar to this:
+..
+  It is a good idea to wait for the system to be fully started before marking it
+  as successfully booted.
+  In order to achieve this, a smart solution is to create a systemd service that calls
+  ``rauc status mark-good`` and use systemd's dependency handling to assure this
+  service will not be executed before all relevant other services came up
+  successfully. It could look similar to this:
+システムが正常に起動したとマークする前に、システムが完全に起動するのを待つことをお勧めします。
+これを実現するためのスマートなソリューションは、 ``rauc status mark-good`` を呼び出す systemd サービスを作成し、systemd の依存関係処理を使用して、関連する他のすべてのサービスが正常に起動する前にこのサービスが実行されないようにすることです。
+これは次のようになります。
 
 .. code-block:: cfg
 
@@ -1344,16 +1382,23 @@ To only start RAUC when required, using D-Bus activation is a smart solution.
 In order to enable D-Bus activation, properly install the D-Bus service file
 ``de.pengutronix.rauc.service`` from the ``data/`` dir.
 
-Watchdog Configuration
+..
+  Watchdog Configuration
+ウォッチドッグ設定
 ----------------------
 
-Detecting system hangs during runtime requires to have a watchdog and to have
-the watchdog configured and handled properly.
-Systemd provides a sophisticated watchdog multiplexing and handling allowing
-you to configure separate timeouts and handlings for each of your services.
+..
+  Detecting system hangs during runtime requires to have a watchdog and to have
+  the watchdog configured and handled properly.
+  Systemd provides a sophisticated watchdog multiplexing and handling allowing
+  you to configure separate timeouts and handlings for each of your services.
+実行時にシステムのハングを検出するには、ウォッチドッグが必要であり、ウォッチドッグを適切に構成および処理する必要があります。
+Systemd は、洗練されたウォッチドッグの多重化と処理を提供し、サービスごとに個別のタイムアウトと処理を構成できるようにします。
 
-To enable it, you need at least to have these lines in your systemd
-configuration::
+..
+  To enable it, you need at least to have these lines in your systemd
+  configuration::
+これを有効にするには、systemd 設定に少なくとも次の行が必要です。
 
   RuntimeWatchdogSec=20
   ShutdownWatchdogSec=10min

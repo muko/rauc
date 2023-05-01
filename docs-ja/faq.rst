@@ -1,49 +1,75 @@
-Frequently Asked Questions
+.. Frequently Asked Questions
+よくある質問
 ==========================
 
 .. contents::
    :local:
    :depth: 1
 
-Why doesn't the installed system use the whole partition?
+..
+  Why doesn't the installed system use the whole partition?
+インストールされたシステムがパーティション全体を使用しないのはなぜですか?
 ---------------------------------------------------------
 
-The filesystem image installed via RAUC was probably created for a size smaller
-than the partition on the target device.
+..
+  The filesystem image installed via RAUC was probably created for a size smaller
+  than the partition on the target device.
+RAUC 経由でインストールされたファイル システム イメージは、ターゲット デバイスのパーティションよりも小さいサイズで作成された可能性があります。
 
-Especially in cases where the same bundle will be installed on devices which use
-different partition sizes, tar archives are preferable to filesystem images.
-When RAUC installs from a tar archive, it will first create a new filesystem on
-the target partition, allowing use of the full size.
+..
+  Especially in cases where the same bundle will be installed on devices which use
+  different partition sizes, tar archives are preferable to filesystem images.
+  When RAUC installs from a tar archive, it will first create a new filesystem on
+  the target partition, allowing use of the full size.
+特に、異なるパーティション サイズを使用するデバイスに同じバンドルをインストールする場合は、ファイル システム イメージよりも tar アーカイブを使用することをお勧めします。
+RAUC を tar アーカイブからインストールすると、最初にターゲット パーティションに新しいファイル システムが作成され、フル サイズを使用できるようになります。
 
-Is it possible to use RAUC without D-Bus (Client/Server mode)?
+..
+  Is it possible to use RAUC without D-Bus (Client/Server mode)?
+D-Bus (クライアント/サーバーモード) なしで RAUC を使用することはできますか?
 --------------------------------------------------------------
 
-Yes. If you compile RAUC using the ``--disable-service`` configure option, you
-will be able to compile RAUC without service mode and without D-Bus support::
-
+..
+  Yes. If you compile RAUC using the ``--disable-service`` configure option, you
+  will be able to compile RAUC without service mode and without D-Bus support::
+はい。 ``--disable-service`` 構成オプションを使用して RAUC をコンパイルすると、サービス モードおよび D-Bus サポートなしで RAUC をコンパイルできます。
+    
   ./configure --disable-service
 
-Then every call of the command line tool will be executed directly rather than
-being forwarded to the RAUC service process running on your machine.
+..
+  Then every call of the command line tool will be executed directly rather than
+  being forwarded to the RAUC service process running on your machine.
+コマンド ライン ツールのすべての呼び出しは、マシンで実行されている RAUC サービス プロセスに転送されるのではなく、直接実行されます。
 
-Why does RAUC not have an ext2 / ext3 file type?
+..
+  Why does RAUC not have an ext2 / ext3 file type?
+RAUC に ext2 / ext3 ファイルタイプがないのはなぜですか?
 ------------------------------------------------
 
-ext4 is the successor of ext3. There is no advantage in using ext3 over ext4.
+..
+  ext4 is the successor of ext3. There is no advantage in using ext3 over ext4.
+ext4 は ext3 の後継です。 ext4 よりも ext3 を使用する利点はありません。
 
-Some people still tend to select ext2 when they want a file system without
-journaling. This is not necessary, as one can turn off journaling in ext4,
-either during creation::
+..
+  Some people still tend to select ext2 when they want a file system without
+  journaling. This is not necessary, as one can turn off journaling in ext4,
+  either during creation::
+ジャーナリングなしのファイルシステムが必要な場合、依然として ext2 を選択する傾向がある人もいます。
+これは必要ありません。
+作成時に ext4 でジャーナリングをオフにできるためです。
 
   mkfs.ext4 -O ^has_journal
 
-or later with::
-
+..
+  or later with::
+またはそれ以降:
+ 
   tune2fs -O ^has_journal
 
-Note that even if there is only an ext4 slot type available, potentially each
-file system mountable as ext4 should work (with the filename suffix adapted).
+..
+  Note that even if there is only an ext4 slot type available, potentially each
+  file system mountable as ext4 should work (with the filename suffix adapted).
+利用可能な ext4 スロット タイプしかない場合でも、ext4 としてマウント可能な各ファイル システムが動作する可能性があることに注意してください (ファイル名の接尾辞が適用されます)。
 
 Is the RAUC bundle format forwards/backwards compatible?
 --------------------------------------------------------
